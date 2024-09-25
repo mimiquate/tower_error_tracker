@@ -15,6 +15,7 @@ defmodule TowerErrorTracker.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      included_applications: [:error_tracker],
       extra_applications: [:logger]
     ]
   end
