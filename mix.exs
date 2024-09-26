@@ -1,14 +1,25 @@
 defmodule TowerErrorTracker.MixProject do
   use Mix.Project
 
+  @description "Tower reporter for ErrorTracker"
+  @source_url "https://github.com/mimiquate/tower_error_tracker"
+  @version "0.1.0"
+
   def project do
     [
       app: :tower_error_tracker,
-      version: "0.1.0",
+      description: @description,
+      version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
-      deps: deps()
+      deps: deps(),
+      package: package(),
+
+      # Docs
+      name: "TowerErrorTracker",
+      source_url: @source_url,
+      docs: docs()
     ]
   end
 
@@ -29,9 +40,28 @@ defmodule TowerErrorTracker.MixProject do
       {:tower, "~> 0.5.0"},
       {:error_tracker, "~> 0.3.0", runtime: false},
 
+      # Dev
+      {:ex_doc, "~> 0.34.2", only: :dev, runtime: false},
+
       # Test
       {:assert_eventually, "~> 1.0", only: :test},
       {:ecto_sqlite3, "~> 0.17.2", only: :test}
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["Apache-2.0"],
+      links: %{
+        "GitHub" => @source_url
+      }
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"]
     ]
   end
 end
