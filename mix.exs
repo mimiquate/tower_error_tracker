@@ -5,7 +5,7 @@ defmodule TowerErrorTracker.MixProject do
     [
       app: :tower_error_tracker,
       version: "0.1.0",
-      elixir: "~> 1.16",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps()
