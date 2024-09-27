@@ -12,14 +12,20 @@ defmodule TowerErrorTracker.Reporter do
   @impl true
   def report_event(%Tower.Event{kind: :error, reason: exception, stacktrace: stacktrace}) do
     ErrorTracker.report(exception, stacktrace)
+
+    :ok
   end
 
   def report_event(%Tower.Event{kind: :throw, reason: value, stacktrace: stacktrace}) do
     ErrorTracker.report({:throw, value}, stacktrace)
+
+    :ok
   end
 
   def report_event(%Tower.Event{kind: :exit, reason: reason, stacktrace: stacktrace}) do
     ErrorTracker.report({:exit, reason}, stacktrace)
+
+    :ok
   end
 
   def report_event(_event) do
