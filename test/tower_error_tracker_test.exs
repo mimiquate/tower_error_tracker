@@ -66,6 +66,24 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "reports an abnormal exit" do
+    capture_log(fn ->
+      in_unlinked_process(fn ->
+        exit(:abnormal)
+      end)
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "exit",
+          reason: "abnormal",
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
