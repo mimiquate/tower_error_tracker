@@ -84,6 +84,72 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "includes exception request data if available with Plug.Cowboy" do
+    # An ephemeral port hopefully not being in the host running this code
+    plug_port = 51111
+    url = "http://127.0.0.1:#{plug_port}/arithmetic-error"
+
+    start_supervised!(
+      {Plug.Cowboy, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
+    )
+
+    capture_log(fn ->
+      {:ok, _response} = :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "Elixir.ArithmeticError",
+          reason: "bad argument in arithmetic expression",
+          occurrences: [
+            %{
+              context: %{
+                "request" => %{
+                  "method" => "GET",
+                  "url" => ^url
+                }
+              }
+            }
+          ]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
+  test "includes exception request data if available with Bandit" do
+    # An ephemeral port hopefully not being in the host running this code
+    plug_port = 51111
+    url = "http://127.0.0.1:#{plug_port}/arithmetic-error"
+
+    start_supervised!(
+      {Bandit, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
+    )
+
+    capture_log(fn ->
+      {:ok, _response} = :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "Elixir.ArithmeticError",
+          reason: "bad argument in arithmetic expression",
+          occurrences: [
+            %{
+              context: %{
+                "request" => %{
+                  "method" => "GET",
+                  "url" => ^url
+                }
+              }
+            }
+          ]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
