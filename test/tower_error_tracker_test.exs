@@ -48,6 +48,24 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "reports an uncaught throw" do
+    capture_log(fn ->
+      in_unlinked_process(fn ->
+        throw("something")
+      end)
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "throw",
+          reason: "something",
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
