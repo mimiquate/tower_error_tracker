@@ -4,7 +4,7 @@ defmodule TowerErrorTracker.Reporter do
 
   ## Example
 
-      config :tower, :reporters, [TowerErroTracker.Reporter]
+      config :tower, :reporters, [TowerErrorTracker.Reporter]
   """
 
   @behaviour Tower.Reporter
