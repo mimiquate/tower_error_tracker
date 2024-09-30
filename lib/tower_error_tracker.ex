@@ -1,18 +1,16 @@
 defmodule TowerErrorTracker do
   @moduledoc """
-  Documentation for `TowerErrorTracker`.
+  The module that needs to be added to the list of Tower reporters.
+
+  ## Example
+
+      config :tower, :reporters, [TowerErrorTracker]
   """
 
-  @doc """
-  Hello world.
+  @behaviour Tower.Reporter
 
-  ## Examples
-
-      iex> TowerErrorTracker.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  @impl true
+  def report_event(event) do
+    TowerErrorTracker.Reporter.report_event(event)
   end
 end

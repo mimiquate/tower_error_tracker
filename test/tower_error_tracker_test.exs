@@ -19,7 +19,7 @@ defmodule TowerErrorTrackerTest do
       Ecto.Migrator.up(TestApp.Repo, 0, TestApp.Repo.Migrations.AddErrorTracker)
     end)
 
-    Application.put_env(:tower, :reporters, [TowerErrorTracker.Reporter])
+    Application.put_env(:tower, :reporters, [TowerErrorTracker])
     Tower.attach()
 
     on_exit(fn ->

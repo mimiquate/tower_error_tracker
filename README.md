@@ -43,7 +43,7 @@ config(
   :reporters,
   [
     # along any other possible reporters
-    TowerErrorTracker.Reporter
+    TowerErrorTracker
   ]
 )
 ```

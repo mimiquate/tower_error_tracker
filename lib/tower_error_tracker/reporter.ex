@@ -1,15 +1,6 @@
 defmodule TowerErrorTracker.Reporter do
-  @moduledoc """
-  The reporter module that needs to be added to the list of Tower reporters.
+  @moduledoc false
 
-  ## Example
-
-      config :tower, :reporters, [TowerErrorTracker.Reporter]
-  """
-
-  @behaviour Tower.Reporter
-
-  @impl true
   def report_event(%Tower.Event{
         kind: :error,
         reason: exception,
