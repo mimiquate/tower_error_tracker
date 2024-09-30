@@ -122,11 +122,11 @@ defmodule TowerErrorTrackerTest do
     plug_port = 51111
     url = "http://127.0.0.1:#{plug_port}/arithmetic-error"
 
-    start_supervised!(
-      {Bandit, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
-    )
-
     capture_log(fn ->
+      start_supervised!(
+        {Bandit, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
+      )
+
       {:ok, _response} = :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
     end)
 
