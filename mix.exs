@@ -3,7 +3,7 @@ defmodule TowerErrorTracker.MixProject do
 
   @description "Tower reporter for ErrorTracker"
   @source_url "https://github.com/mimiquate/tower_error_tracker"
-  @version "0.2.0"
+  @version "0.3.0"
 
   def project do
     [

@@ -13,7 +13,7 @@ Package can be installed by adding `tower_error_tracker` to your list of depende
 ```elixir
 def deps do
   [
-    {:tower_error_tracker, "~> 0.2.0"}
+    {:tower_error_tracker, "~> 0.3.0"}
   ]
 end
 ```
