@@ -20,10 +20,8 @@ defmodule TowerErrorTrackerTest do
     end)
 
     Application.put_env(:tower, :reporters, [TowerErrorTracker])
-    Tower.attach()
 
     on_exit(fn ->
-      Tower.detach()
       Application.put_env(:tower, :reporters, [])
       Application.put_env(:error_tracker, :otp_app, nil)
       Application.put_env(:error_tracker, :repo, nil)

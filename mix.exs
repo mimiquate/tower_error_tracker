@@ -37,7 +37,7 @@ defmodule TowerErrorTracker.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:tower, "~> 0.5.0"},
+      {:tower, "~> 0.6.0"},
       {:error_tracker, "~> 0.3.0", runtime: false},
 
       # Dev

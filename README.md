@@ -20,20 +20,7 @@ end
 
 ## Usage
 
-First, attach `Tower` to automatically capture errors.
-
-```elixir
-# lib/<your_app>/application.ex
-
-defmodule YourApp.Application do
-  def start(_type, _args) do
-    Tower.attach()
-
-    # rest of your code
-  end
-```
-
-Then tell `Tower` to inform `TowerErrorTracker` reporter about them.
+Tell `Tower` to inform `TowerErrorTracker` reporter about errors.
 
 ```elixir
 # config/config.exs
@@ -48,7 +35,7 @@ config(
 )
 ```
 
-And finally configure and set up `:error_tracker` new database tables by following just these two ErrorTracker sections:
+And configure and set up `:error_tracker` new database tables by following just these two ErrorTracker sections:
 
 - [Configure](https://github.com/elixir-error-tracker/error-tracker/blob/main/guides/Getting%20Started.md#configuring-errortracker)
 - [Set up the database](https://github.com/elixir-error-tracker/error-tracker/blob/main/guides/Getting%20Started.md#setting-up-the-database)
