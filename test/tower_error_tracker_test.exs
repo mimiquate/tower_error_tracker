@@ -166,6 +166,40 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "reports throw with Bandit" do
+    # An ephemeral port hopefully not being in the host running this code
+    plug_port = 51111
+    url = "http://127.0.0.1:#{plug_port}/uncaught-throw"
+
+    capture_log(fn ->
+      start_supervised!(
+        {Bandit, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
+      )
+
+      {:error, _response} =
+        :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
+    end)
+
+    assert_eventually(
+      [
+        %{
+          # An exit instead of a throw because Bandit doesn't handle throw's
+          # for the moment. See: https://github.com/mtrudel/bandit/issues/410.
+          kind: "exit",
+          reason: "bad return value: \"from inside a plug\"",
+          occurrences: [
+            %{
+              context:
+                %{
+                  # no request data
+                }
+            }
+          ]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 

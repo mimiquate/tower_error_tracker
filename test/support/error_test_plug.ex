@@ -9,4 +9,14 @@ defmodule TowerErrorTracker.ErrorTestPlug do
 
     send_resp(conn, 200, "OK")
   end
+
+  get "/uncaught-throw" do
+    throw("from inside a plug")
+
+    send_resp(conn, 200, "OK")
+  end
+
+  match _ do
+    send_resp(conn, 404, "Not Found")
+  end
 end
