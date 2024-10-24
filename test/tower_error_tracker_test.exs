@@ -75,7 +75,25 @@ defmodule TowerErrorTrackerTest do
       [
         %{
           kind: "exit",
-          reason: "abnormal",
+          reason: ":abnormal",
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
+  test "reports a :gen_server common abnormal exit" do
+    capture_log(fn ->
+      in_unlinked_process(fn ->
+        exit({:bad_return_value, "bad value"})
+      end)
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "exit",
+          reason: "bad return value: \"bad value\"",
           occurrences: [_]
         }
       ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)

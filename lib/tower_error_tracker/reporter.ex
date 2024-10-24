@@ -13,13 +13,23 @@ defmodule TowerErrorTracker.Reporter do
   end
 
   def report_event(%Tower.Event{
-        kind: kind,
+        kind: :throw,
         reason: reason,
         stacktrace: stacktrace,
         plug_conn: plug_conn
-      })
-      when kind in [:throw, :exit] do
-    ErrorTracker.report({kind, reason}, stacktrace, context(plug_conn))
+      }) do
+    ErrorTracker.report({:throw, reason}, stacktrace, context(plug_conn))
+
+    :ok
+  end
+
+  def report_event(%Tower.Event{
+        kind: :exit,
+        reason: reason,
+        stacktrace: stacktrace,
+        plug_conn: plug_conn
+      }) do
+    ErrorTracker.report({:exit, Exception.format_exit(reason)}, stacktrace, context(plug_conn))
 
     :ok
   end
