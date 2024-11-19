@@ -176,23 +176,22 @@ defmodule TowerErrorTrackerTest do
         {Bandit, plug: TowerErrorTracker.ErrorTestPlug, scheme: :http, port: plug_port}
       )
 
-      {:error, _response} =
-        :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
+      {:ok, _response} = :httpc.request(:get, {url, [{~c"user-agent", "httpc client"}]}, [], [])
     end)
 
     assert_eventually(
       [
         %{
-          # An exit instead of a throw because Bandit doesn't handle throw's
-          # for the moment. See: https://github.com/mtrudel/bandit/issues/410.
-          kind: "exit",
-          reason: "bad return value: \"from inside a plug\"",
+          kind: "throw",
+          reason: "\"from inside a plug\"",
           occurrences: [
             %{
-              context:
-                %{
-                  # no request data
+              context: %{
+                "request" => %{
+                  "method" => "GET",
+                  "url" => ^url
                 }
+              }
             }
           ]
         }
