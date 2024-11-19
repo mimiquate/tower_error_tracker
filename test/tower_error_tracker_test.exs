@@ -57,7 +57,7 @@ defmodule TowerErrorTrackerTest do
       [
         %{
           kind: "throw",
-          reason: "something",
+          reason: "\"something\"",
           occurrences: [_]
         }
       ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)

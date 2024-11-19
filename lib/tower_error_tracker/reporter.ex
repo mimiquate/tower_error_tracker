@@ -14,11 +14,11 @@ defmodule TowerErrorTracker.Reporter do
 
   def report_event(%Tower.Event{
         kind: :throw,
-        reason: reason,
+        reason: value,
         stacktrace: stacktrace,
         plug_conn: plug_conn
       }) do
-    ErrorTracker.report({:throw, reason}, stacktrace, context(plug_conn))
+    ErrorTracker.report({:throw, inspect(value)}, stacktrace, context(plug_conn))
 
     :ok
   end
