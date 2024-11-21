@@ -5,6 +5,8 @@ defmodule TowerErrorTracker.ErrorTestPlug do
   plug(:dispatch)
 
   get "/arithmetic-error" do
+    ErrorTracker.set_context(%{user_id: 123})
+
     1 / 0
 
     send_resp(conn, 200, "OK")
