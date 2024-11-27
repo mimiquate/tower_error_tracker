@@ -157,7 +157,8 @@ defmodule TowerErrorTrackerTest do
                 "request" => %{
                   "method" => "GET",
                   "url" => ^url
-                }
+                },
+                "user_id" => 123
               }
             }
           ]
