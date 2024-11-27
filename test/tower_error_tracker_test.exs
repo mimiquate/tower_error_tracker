@@ -199,6 +199,28 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "reports event metadata as context" do
+    Tower.report_exception(RuntimeError.exception("Oops!"), [], metadata: %{user_id: 123})
+
+    assert_eventually(
+      [
+        %{
+          kind: "Elixir.RuntimeError",
+          reason: "Oops!",
+          occurrences: [
+            %{
+              context: %{
+                "metadata" => %{
+                  "user_id" => 123
+                }
+              }
+            }
+          ]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
