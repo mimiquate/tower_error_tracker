@@ -41,7 +41,7 @@ defmodule TowerErrorTracker.MixProject do
       {:error_tracker, "~> 0.3", runtime: false},
 
       # Dev
-      {:ex_doc, "~> 0.35.1", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.36.1", only: :dev, runtime: false},
       {:blend, "~> 0.4.1", only: :dev},
 
       # Test
