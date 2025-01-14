@@ -10,14 +10,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - elixir: '1.17'
-            erlang: '27.1'
+          - elixir: '1.18'
+            erlang: '27.2'
             lint: true
+          - elixir: '1.17'
+            erlang: '26.2.5.6'
           - elixir: '1.16'
-            erlang: '26.2.5.3'
+            erlang: '25.3.2.16'
             blend: error_tracker_0_4
           - elixir: '1.15'
-            erlang: '25.3.2.14'
+            erlang: '25.3.2.16'
             blend: error_tracker_0_3
     steps:
       - uses: actions/checkout@v4
