@@ -11,6 +11,12 @@ defmodule TowerErrorTracker do
 
   @impl true
   def report_event(event) do
-    TowerErrorTracker.Reporter.report_event(event)
+    value = Process.get(:error_tracker_context, %{})
+
+    Tower.async(fn ->
+      Process.put(:error_tracker_context, value)
+
+      TowerErrorTracker.Reporter.report_event(event)
+    end)
   end
 end
