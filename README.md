@@ -18,6 +18,10 @@ def deps do
 end
 ```
 
+> [!NOTE]
+> Don't list `:error_tracker` in the dependencies, it is already included as part of `:tower_error_tracker`.
+> If you really must list it, list it with [`runtime: false`](https://hexdocs.pm/mix/Mix.Tasks.Deps.html#module-dependency-definition-options), so you don't get [duplicated](https://github.com/mimiquate/tower_error_tracker/issues/38) errors reports.
+
 ## Usage
 
 Tell `Tower` to inform `TowerErrorTracker` reporter about errors.
