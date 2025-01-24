@@ -15,6 +15,7 @@ jobs:
             lint: true
           - elixir: '1.17'
             erlang: '26.2.5.6'
+            blend: tower_0_7
           - elixir: '1.16'
             erlang: '25.3.2.16'
             blend: error_tracker_0_4
