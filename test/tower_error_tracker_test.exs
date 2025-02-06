@@ -7,6 +7,9 @@ defmodule TowerErrorTrackerTest do
   import ExUnit.CaptureLog, only: [capture_log: 1]
 
   setup do
+    Path.wildcard("tmp/test-*.db")
+    |> Enum.map(&File.rm!/1)
+
     Application.put_env(:error_tracker, :repo, TestApp.Repo)
     Application.put_env(:error_tracker, :otp_app, :tower_error_tracker)
 
