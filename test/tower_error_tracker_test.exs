@@ -219,6 +219,18 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "Logger messages not reported because not supported by ErrorTracker" do
+    in_unlinked_process(fn ->
+      require Logger
+
+      capture_log(fn ->
+        Logger.emergency("Panic!")
+      end)
+    end)
+
+    assert [] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
