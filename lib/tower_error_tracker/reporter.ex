@@ -19,6 +19,33 @@ defmodule TowerErrorTracker.Reporter do
     :ok
   end
 
+  def report_event(
+        %Tower.Event{
+          kind: :message,
+          reason: reason,
+          level: level,
+          stacktrace: stacktrace,
+          log_event: %{meta: %{mfa: {m, f, a}, file: file, line: line}}
+        } = event
+      )
+      when is_nil(stacktrace) or length(stacktrace) == 0 do
+    ErrorTracker.report(
+      {:message, "[#{level}] #{reason}"},
+      [{m, f, a, [file: file, line: line]}],
+      context(event)
+    )
+
+    :ok
+  end
+
+  def report_event(
+        %Tower.Event{kind: :message, reason: reason, level: level, stacktrace: stacktrace} = event
+      ) do
+    ErrorTracker.report({:message, "[#{level}] #{reason}"}, stacktrace || [], context(event))
+
+    :ok
+  end
+
   def report_event(_event) do
     :ignore
   end

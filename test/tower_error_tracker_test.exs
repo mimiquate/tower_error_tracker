@@ -219,16 +219,35 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
-  test "Logger messages not reported because not supported by ErrorTracker" do
+  test "Logger messages reported as special custom exceptions (because messages not supported by ErrorTracker)" do
     in_unlinked_process(fn ->
       require Logger
 
       capture_log(fn ->
-        Logger.emergency("Panic!")
+        Logger.emergency("Emergency!")
+
+        Logger.critical("Critical!")
       end)
     end)
 
-    assert [] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    # Testing that both are reported as separate errors and NOT as seprate occurrences of the same error
+    assert_eventually(
+      [
+        %{
+          kind: "message",
+          reason: reason1,
+          occurrences: [_]
+        },
+        %{
+          kind: "message",
+          reason: reason2,
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+
+    # tower 0.7 async reporting doesn't necessary report them ordered
+    assert Enum.sort([reason1, reason2]) == ["[critical] Critical!", "[emergency] Emergency!"]
   end
 
   defp in_unlinked_process(fun) when is_function(fun, 0) do
