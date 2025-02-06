@@ -10,8 +10,8 @@ defmodule TowerErrorTrackerTest do
     Path.wildcard("tmp/test-*.db")
     |> Enum.map(&File.rm!/1)
 
-    Application.put_env(:error_tracker, :repo, TestApp.Repo)
-    Application.put_env(:error_tracker, :otp_app, :tower_error_tracker)
+    put_env(:error_tracker, :repo, TestApp.Repo)
+    put_env(:error_tracker, :otp_app, :tower_error_tracker)
 
     start_link_supervised!({
       TestApp.Repo,
@@ -22,13 +22,7 @@ defmodule TowerErrorTrackerTest do
       Ecto.Migrator.up(TestApp.Repo, 0, TestApp.Repo.Migrations.AddErrorTracker)
     end)
 
-    Application.put_env(:tower, :reporters, [TowerErrorTracker])
-
-    on_exit(fn ->
-      Application.put_env(:tower, :reporters, [])
-      Application.put_env(:error_tracker, :otp_app, nil)
-      Application.put_env(:error_tracker, :repo, nil)
-    end)
+    put_env(:tower, :reporters, [TowerErrorTracker])
   end
 
   test "reports arithmetic error" do
@@ -231,5 +225,18 @@ defmodule TowerErrorTrackerTest do
     pid
     |> Task.Supervisor.async_nolink(fun)
     |> Task.yield()
+  end
+
+  defp put_env(app, key, value) do
+    original_value = Application.get_env(app, key)
+    Application.put_env(app, key, value)
+
+    on_exit(fn ->
+      if original_value == nil do
+        Application.delete_env(app, key)
+      else
+        Application.put_env(app, key, original_value)
+      end
+    end)
   end
 end
