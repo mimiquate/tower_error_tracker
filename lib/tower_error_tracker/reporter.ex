@@ -1,3 +1,11 @@
+defmodule TowerErrorTracker.ReportedMessage do
+  defexception [:level, :message]
+
+  def message(%{level: level, message: message}) do
+    "[#{level}] #{message}"
+  end
+end
+
 defmodule TowerErrorTracker.Reporter do
   @moduledoc false
 
@@ -15,6 +23,13 @@ defmodule TowerErrorTracker.Reporter do
 
   def report_event(%Tower.Event{kind: :exit, reason: reason, stacktrace: stacktrace} = event) do
     ErrorTracker.report({:exit, Exception.format_exit(reason)}, stacktrace, context(event))
+
+    :ok
+  end
+
+  def report_event(%Tower.Event{kind: :message, reason: reason, level: level} = event) do
+    TowerErrorTracker.ReportedMessage.exception(level: level, message: reason)
+    |> ErrorTracker.report([], context(event))
 
     :ok
   end

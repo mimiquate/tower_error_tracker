@@ -219,7 +219,7 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
-  test "Logger messages not reported because not supported by ErrorTracker" do
+  test "Logger messages reported as special custom exceptions (because messages not supported by ErrorTracker)" do
     in_unlinked_process(fn ->
       require Logger
 
@@ -228,7 +228,15 @@ defmodule TowerErrorTrackerTest do
       end)
     end)
 
-    assert [] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    assert_eventually(
+      [
+        %{
+          kind: "Elixir.TowerErrorTracker.ReportedMessage",
+          reason: "[emergency] Panic!",
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
   end
 
   defp in_unlinked_process(fun) when is_function(fun, 0) do
