@@ -19,6 +19,13 @@ defmodule TowerErrorTracker.Reporter do
     :ok
   end
 
+  def report_event(%Tower.Event{kind: :message, reason: reason, level: level} = event) do
+    message = "[#{level}] #{reason}"
+    ErrorTracker.report({"message #{:erlang.phash2(message)}", message}, [], context(event))
+
+    :ok
+  end
+
   def report_event(_event) do
     :ignore
   end
