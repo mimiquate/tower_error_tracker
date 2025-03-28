@@ -7,13 +7,15 @@ defmodule TestApp.Repo.Migrations.AddErrorTracker do
   def down, do: ErrorTracker.Migration.down(version: 1)
 
   defp migration_version do
-    Application.spec(:error_tracker, :vsn)
-    |> to_string()
-    |> Version.parse!()
-    |> Version.match?(">= 0.5.0")
-    |> case do
-      true -> 4
-      false -> 3
+    error_tracker_version =
+      Application.spec(:error_tracker, :vsn)
+      |> to_string()
+      |> Version.parse!()
+
+    cond do
+      Version.match?(error_tracker_version, ">= 0.6.0") -> 5
+      Version.match?(error_tracker_version, "~> 0.5.0") -> 4
+      true -> 3
     end
   end
 end

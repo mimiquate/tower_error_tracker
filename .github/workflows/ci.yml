@@ -18,10 +18,10 @@ jobs:
             blend: tower_0_7
           - elixir: '1.16'
             erlang: '25.3.2.16'
-            blend: error_tracker_0_4
+            blend: error_tracker_0_5
           - elixir: '1.15'
             erlang: '25.3.2.16'
-            blend: error_tracker_0_3
+            blend: error_tracker_0_4
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
