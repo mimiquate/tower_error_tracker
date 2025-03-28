@@ -38,7 +38,7 @@ defmodule TowerErrorTracker.MixProject do
   defp deps do
     [
       {:tower, "~> 0.7.1 or ~> 0.8.0"},
-      {:error_tracker, "~> 0.3", runtime: false},
+      {:error_tracker, "~> 0.4", runtime: false},
 
       # Dev
       {:ex_doc, "~> 0.37.1", only: :dev, runtime: false},
