@@ -250,6 +250,26 @@ defmodule TowerErrorTrackerTest do
     assert Enum.sort([reason1, reason2]) == ["[critical] Critical!", "[emergency] Emergency!"]
   end
 
+  test "reports a Logger structured message report" do
+    in_unlinked_process(fn ->
+      require Logger
+
+      capture_log(fn ->
+        Logger.critical(something: :reported, this: :critical)
+      end)
+    end)
+
+    assert_eventually(
+      [
+        %{
+          kind: "message",
+          reason: "[critical] [something: :reported, this: :critical]",
+          occurrences: [_]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   defp in_unlinked_process(fun) when is_function(fun, 0) do
     {:ok, pid} = Task.Supervisor.start_link()
 
