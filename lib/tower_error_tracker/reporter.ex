@@ -30,7 +30,7 @@ defmodule TowerErrorTracker.Reporter do
       )
       when is_nil(stacktrace) or length(stacktrace) == 0 do
     ErrorTracker.report(
-      {:message, "[#{level}] #{reason}"},
+      {:message, "[#{level}] #{if(is_binary(reason), do: reason, else: inspect(reason))}"},
       [{m, f, a, [file: file, line: line]}],
       context(event)
     )
@@ -41,7 +41,11 @@ defmodule TowerErrorTracker.Reporter do
   def report_event(
         %Tower.Event{kind: :message, reason: reason, level: level, stacktrace: stacktrace} = event
       ) do
-    ErrorTracker.report({:message, "[#{level}] #{reason}"}, stacktrace || [], context(event))
+    ErrorTracker.report(
+      {:message, "[#{level}] #{if(is_binary(reason), do: reason, else: inspect(reason))}"},
+      stacktrace || [],
+      context(event)
+    )
 
     :ok
   end
