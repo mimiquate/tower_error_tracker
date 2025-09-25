@@ -40,6 +40,9 @@ defmodule TowerErrorTracker.MixProject do
       {:tower, "~> 0.7.1 or ~> 0.8.0"},
       {:error_tracker, "~> 0.4", runtime: false},
 
+      # Optional
+      {:igniter, "~> 0.6", optional: true},
+
       # Dev
       {:ex_doc, "~> 0.38.2", only: :dev, runtime: false},
       {:blend, "~> 0.5.0", only: :dev},
