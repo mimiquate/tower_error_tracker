@@ -40,6 +40,12 @@ if Code.ensure_loaded?(Igniter) and Code.ensure_loaded?(Tower.Igniter) do
 
     @impl Igniter.Mix.Task
     def igniter(igniter) do
+      Mix.shell().info("""
+      IMPORTANT: Also configure and set up `:error_tracker` new database tables by following just these two ErrorTracker sections of the Getting Started guide:
+        · https://github.com/elixir-error-tracker/error-tracker/blob/main/guides/Getting%20Started.md#configuring-errortracker
+        · https://github.com/elixir-error-tracker/error-tracker/blob/main/guides/Getting%20Started.md#setting-up-the-database
+      """)
+
       igniter
       |> Tower.Igniter.reporters_list_append(TowerErrorTracker)
     end
