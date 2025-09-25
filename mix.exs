@@ -46,7 +46,7 @@ defmodule TowerErrorTracker.MixProject do
 
       # Test
       {:assert_eventually, "~> 1.0", only: :test},
-      {:ecto_sqlite3, "~> 0.21.0", only: :test},
+      {:ecto_sqlite3, "~> 0.22.0", only: :test},
       {:plug_cowboy, "~> 2.7", only: :test},
       {:bandit, "~> 1.5", only: :test}
     ]
