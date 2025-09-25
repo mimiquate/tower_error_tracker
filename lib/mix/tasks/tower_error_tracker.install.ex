@@ -25,7 +25,7 @@ defmodule Mix.Tasks.TowerErrorTracker.Install.Docs do
   end
 end
 
-if Code.ensure_loaded?(Igniter) do
+if Code.ensure_loaded?(Igniter) and Code.ensure_loaded?(Tower.Igniter) do
   defmodule Mix.Tasks.TowerErrorTracker.Install do
     @shortdoc "#{__MODULE__.Docs.short_doc()}"
 
