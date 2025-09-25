@@ -52,14 +52,15 @@ else
 
     use Mix.Task
 
+    @error_message """
+    The task 'tower_error_tracker.install' requires igniter plus tower >= 0.8.4. Please install igniter and/or update tower and try again.
+
+    For more information, see: https://hexdocs.pm/igniter/readme.html#installation
+    """
+
     @impl Mix.Task
     def run(_argv) do
-      Mix.shell().error("""
-      The task 'tower_error_tracker.install' requires igniter. Please install igniter and try again.
-
-      For more information, see: https://hexdocs.pm/igniter/readme.html#installation
-      """)
-
+      Mix.shell().error(@error_message)
       exit({:shutdown, 1})
     end
   end
