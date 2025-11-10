@@ -20,7 +20,6 @@ jobs:
             blend: tower_0_7
           - elixir: '1.16'
             erlang: '25.3.2.21'
-            blend: error_tracker_0_5
           - elixir: '1.15'
             erlang: '25.3.2.21'
             blend: error_tracker_0_4
