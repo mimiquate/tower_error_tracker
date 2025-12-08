@@ -219,6 +219,44 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "properly reports elixir terms present in metadata that don't have JSON native formatting" do
+    Tower.report_exception(
+      RuntimeError.exception("Oops!"),
+      [],
+      metadata: %{
+        :function => fn x -> x end,
+        :pid => self(),
+        :port => Port.list(),
+        :ref => make_ref(),
+        {:one, :two} => {:three, :four},
+        :keyword => [a: self(), b: self()]
+      }
+    )
+
+    assert_eventually(
+      [
+        %{
+          kind: "Elixir.RuntimeError",
+          reason: "Oops!",
+          occurrences: [
+            %{
+              context: %{
+                "metadata" => %{
+                  "function" => "#Function<" <> _,
+                  "pid" => "#PID<" <> _,
+                  "port" => ["#Port<" <> _ | _],
+                  "ref" => "#Reference<" <> _,
+                  "{:one, :two}" => "{:three, :four}",
+                  "keyword" => ["{:a, #PID<" <> _, "{:b, #PID<" <> _]
+                }
+              }
+            }
+          ]
+        }
+      ] = TestApp.Repo.all(ErrorTracker.Error) |> TestApp.Repo.preload(:occurrences)
+    )
+  end
+
   test "Logger messages reported as special custom exceptions (because messages not supported by ErrorTracker)" do
     in_unlinked_process(fn ->
       require Logger
