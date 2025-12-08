@@ -60,7 +60,7 @@ defmodule TowerErrorTracker.Reporter do
   end
 
   defp metadata_context(metadata) when is_map(metadata) and map_size(metadata) > 0 do
-    %{metadata: metadata}
+    %{metadata: json_prepare(metadata)}
   end
 
   defp metadata_context(_), do: %{}
@@ -81,4 +81,32 @@ defmodule TowerErrorTracker.Reporter do
   else
     defp request_context(_), do: %{}
   end
+
+  defp json_prepare(struct) when is_struct(struct), do: struct
+
+  defp json_prepare(map) when is_map(map) do
+    map
+    |> Enum.map(fn {k, v} ->
+      {json_prepare(k), json_prepare(v)}
+    end)
+    |> Enum.into(%{})
+  end
+
+  defp json_prepare(list) when is_list(list) do
+    list
+    |> Enum.map(fn element ->
+      json_prepare(element)
+    end)
+  end
+
+  defp json_prepare(value)
+       when is_tuple(value) or
+              is_pid(value) or
+              is_reference(value) or
+              is_port(value) or
+              is_function(value) do
+    inspect(value)
+  end
+
+  defp json_prepare(value), do: value
 end
