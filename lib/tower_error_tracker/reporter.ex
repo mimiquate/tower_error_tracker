@@ -2,19 +2,19 @@ defmodule TowerErrorTracker.Reporter do
   @moduledoc false
 
   def report_event(%Tower.Event{kind: :error, reason: exception, stacktrace: stacktrace} = event) do
-    ErrorTracker.report(exception, stacktrace, context(event))
+    report(exception, stacktrace, context(event))
 
     :ok
   end
 
   def report_event(%Tower.Event{kind: :throw, reason: value, stacktrace: stacktrace} = event) do
-    ErrorTracker.report({:throw, inspect(value)}, stacktrace, context(event))
+    report({:throw, inspect(value)}, stacktrace, context(event))
 
     :ok
   end
 
   def report_event(%Tower.Event{kind: :exit, reason: reason, stacktrace: stacktrace} = event) do
-    ErrorTracker.report({:exit, Exception.format_exit(reason)}, stacktrace, context(event))
+    report({:exit, Exception.format_exit(reason)}, stacktrace, context(event))
 
     :ok
   end
@@ -29,7 +29,7 @@ defmodule TowerErrorTracker.Reporter do
         } = event
       )
       when is_nil(stacktrace) or length(stacktrace) == 0 do
-    ErrorTracker.report(
+    report(
       {:message, "[#{level}] #{if(is_binary(reason), do: reason, else: inspect(reason))}"},
       [{m, f, a, [file: file, line: line]}],
       context(event)
@@ -109,4 +109,11 @@ defmodule TowerErrorTracker.Reporter do
   end
 
   defp json_prepare(value), do: value
+
+  defp report(exception, stacktrace, context) do
+    ErrorTracker.report(exception, stacktrace, context)
+  rescue
+    DBConnection.ConnectionError ->
+      nil
+  end
 end

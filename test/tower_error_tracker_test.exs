@@ -25,6 +25,22 @@ defmodule TowerErrorTrackerTest do
     put_env(:tower, :reporters, [TowerErrorTracker])
   end
 
+  test "when db is down", %{database_path: database_path} do
+    :ok = stop_supervised!(TestApp.Repo)
+
+    Process.sleep(500)
+
+    refute(
+      capture_log(fn ->
+        in_unlinked_process(fn ->
+          1 / 0
+        end)
+
+        Process.sleep(500)
+      end) =~ "Tower.ReportEventError"
+    )
+  end
+
   test "reports arithmetic error" do
     capture_log(fn ->
       in_unlinked_process(fn ->
