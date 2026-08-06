@@ -1,6 +1,10 @@
 defmodule TowerErrorTracker.Reporter do
   @moduledoc false
 
+  def report_event(%Tower.Event{kind: :error, reason: %DBConnection.ConnectionError{}}) do
+    :ignore
+  end
+
   def report_event(%Tower.Event{kind: :error, reason: exception, stacktrace: stacktrace} = event) do
     ErrorTracker.report(exception, stacktrace, context(event))
 

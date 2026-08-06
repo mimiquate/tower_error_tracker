@@ -43,6 +43,16 @@ defmodule TowerErrorTrackerTest do
     )
   end
 
+  test "ignores Ecto connection errors" do
+    capture_log(fn ->
+      in_unlinked_process(fn ->
+        raise DBConnection.ConnectionError, "could not connect"
+      end)
+    end)
+
+    assert [] = TestApp.Repo.all(ErrorTracker.Error)
+  end
+
   test "reports an uncaught throw" do
     capture_log(fn ->
       in_unlinked_process(fn ->
